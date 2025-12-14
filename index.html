@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionale Ristorante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        #app {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        
+        .box h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .box h3 {
+            margin: 20px 0 10px 0;
+            color: #555;
+            font-size: 1.1em;
+        }
+        
+        .form-comanda label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        #input-tavolo {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .menu-selection {
+            margin: 15px 0;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+        
+        .menu-item input {
+            width: 60px;
+            padding: 5px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+        }
+        
+        .lista-ordini {
+            margin-top: 15px;
+        }
+        
+        .ordine-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        
+        .ordine-cucina {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        
+        .ordine-cassa {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .ordine-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .ordine-card strong {
+            color: #333;
+        }
+        
+        .ordine-card small {
+            color: #888;
+        }
+        
+        .ordine-card ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .ordine-card li {
+            margin: 5px 0;
+            color: #555;
+        }
+        
+        .totale {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #10b981;
+            margin: 15px 0;
+            text-align: right;
+        }
+        
+        .ordini-pagati {
+            background: #f0fdf4;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .ordine-pagato {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        @media (max-width: 1200px) {
+            #app {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Gestione dati
+        let ordini = [];
+        let contatoreOrdini = 1;
+
+        // Menu disponibile
+        const menu = [
+            { id: 1, nome: 'Pasta Carbonara', prezzo: 12.50 },
+            { id: 2, nome: 'Pizza Margherita', prezzo: 8.00 },
+            { id: 3, nome: 'Bistecca', prezzo: 18.00 },
+            { id: 4, nome: 'Insalata', prezzo: 6.50 },
+            { id: 5, nome: 'Tiramisù', prezzo: 5.00 },
+            { id: 6, nome: 'Acqua', prezzo: 2.00 },
+            { id: 7, nome: 'Vino (calice)', prezzo: 4.50 }
+        ];
+
+        // Funzioni utility
+        function salvaOrdini() {
+            // Simula localStorage senza usarlo realmente
+            // Gli ordini rimangono in memoria durante la sessione
+        }
+
+        function aggiornaUI() {
+            mostraInterfaccia();
+        }
+
+        // Funzione per creare un nuovo ordine
+        function nuovoOrdine(tavolo, piatti) {
+            const ordine = {
+                id: contatoreOrdini++,
+                tavolo: tavolo,
+                piatti: piatti,
+                stato: 'attesa', // attesa, pronto, pagato
+                timestamp: new Date().toLocaleTimeString()
+            };
+            ordini.push(ordine);
+            salvaOrdini();
+            aggiornaUI();
+        }
+
+        // Funzione per segnare ordine come pronto
+        function segnaComePronto(id) {
+            const ordine = ordini.find(o => o.id === id);
+            if (ordine) {
+                ordine.stato = 'pronto';
+                salvaOrdini();
+                aggiornaUI();
+            }
+        }
+
+        // Funzione per pagare ordine
+        function pagaOrdine(id) {
+            const ordine = ordini.find(o => o.id === id);
+            if (ordine) {
+                ordine.stato = 'pagato';
+                salvaOrdini();
+                aggiornaUI();
+            }
+        }
+
+        // Calcola totale ordine
+        function calcolaTotale(piatti) {
+            let totale = 0;
+            
+            for (let i = 0; i < piatti.length; i++) {
+                let piatto = piatti[i];
+                let costoRiga = piatto.prezzo * piatto.quantita;
+                totale = totale + costoRiga;
+            }
+            
+            return totale.toFixed(2);
+        }
+
+        // Visualizzazione componenti
+        function mostraBoxCameriere() {
+            const ordiniAttesa = ordini.filter(o => o.stato === 'attesa');
+            
+            const html = `
+                <div class="box box-cameriere">
+                    <h2>📋 Cameriere - Nuova Comanda</h2>
+                    <div class="form-comanda">
+                        <label>Tavolo:</label>
+                        <input type="number" id="input-tavolo" value="1" min="1">
+                        
+                        <div class="menu-selection" id="menu-selection">
+                            ${menu.map(piatto => `
+                                <div class="menu-item">
+                                    <span>${piatto.nome} - €${piatto.prezzo.toFixed(2)}</span>
+                                    <input type="number" id="qty-${piatto.id}" value="0" min="0" max="10">
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="inviaComanda()">Invia Comanda</button>
+                    </div>
+                    
+                    <h3>Comande in Attesa (${ordiniAttesa.length})</h3>
+                    <div class="lista-ordini">
+                        ${ordiniAttesa.map(ordine => `
+                            <div class="ordine-card">
+                                <strong>Ordine #${ordine.id} - Tavolo ${ordine.tavolo}</strong>
+                                <small>${ordine.timestamp}</small>
+                                <ul>
+                                    ${ordine.piatti.map(p => `<li>${p.nome} x${p.quantita}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `).join('') || '<p>Nessuna comanda in attesa</p>'}
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function mostraBoxCucina() {
+            const ordiniAttesa = ordini.filter(o => o.stato === 'attesa');
+            
+            const html = `
+                <div class="box box-cucina">
+                    <h2>👨‍🍳 Cucina - Preparazione</h2>
+                    <div class="lista-ordini">
+                        ${ordiniAttesa.map(ordine => `
+                            <div class="ordine-card ordine-cucina">
+                                <div class="ordine-header">
+                                    <strong>Ordine #${ordine.id} - Tavolo ${ordine.tavolo}</strong>
+                                    <small>${ordine.timestamp}</small>
+                                </div>
+                                <ul>
+                                    ${ordine.piatti.map(p => `<li>${p.nome} x${p.quantita}</li>`).join('')}
+                                </ul>
+                                <button class="btn btn-success" onclick="segnaComePronto(${ordine.id})">
+                                    ✓ Pronto per Cassa
+                                </button>
+                            </div>
+                        `).join('') || '<p>Nessun ordine da preparare</p>'}
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function mostraBoxCassa() {
+            const ordiniPronti = ordini.filter(o => o.stato === 'pronto');
+            const ordiniPagati = ordini.filter(o => o.stato === 'pagato');
+            
+            const html = `
+                <div class="box box-cassa">
+                    <h2>💰 Cassa - Pagamenti</h2>
+                    
+                    <h3>Da Pagare (${ordiniPronti.length})</h3>
+                    <div class="lista-ordini">
+                        ${ordiniPronti.map(ordine => {
+                            const totale = calcolaTotale(ordine.piatti);
+                            return `
+                                <div class="ordine-card ordine-cassa">
+                                    <div class="ordine-header">
+                                        <strong>Ordine #${ordine.id} - Tavolo ${ordine.tavolo}</strong>
+                                        <small>${ordine.timestamp}</small>
+                                    </div>
+                                    <ul>
+                                        ${ordine.piatti.map(p => `
+                                            <li>${p.nome} x${p.quantita} = €${(p.prezzo * p.quantita).toFixed(2)}</li>
+                                        `).join('')}
+                                    </ul>
+                                    <div class="totale">TOTALE: €${totale}</div>
+                                    <button class="btn btn-primary" onclick="pagaOrdine(${ordine.id})">
+                                        Incassa
+                                    </button>
+                                </div>
+                            `;
+                        }).join('') || '<p>Nessun ordine da pagare</p>'}
+                    </div>
+                    
+                    <h3>Pagati Oggi (${ordiniPagati.length})</h3>
+                    <div class="ordini-pagati">
+                        ${ordiniPagati.slice(-3).reverse().map(ordine => `
+                            <div class="ordine-pagato">
+                                Ordine #${ordine.id} - Tavolo ${ordine.tavolo} - €${calcolaTotale(ordine.piatti)}
+                            </div>
+                        `).join('') || '<p>Nessun pagamento oggi</p>'}
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function mostraInterfaccia() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${mostraBoxCameriere()}
+                ${mostraBoxCucina()}
+                ${mostraBoxCassa()}
+            `;
+        }
+
+        // Funzione per inviare comanda
+        function inviaComanda() {
+            const tavolo = parseInt(document.getElementById('input-tavolo').value);
+            const piatti = [];
+            
+            menu.forEach(piatto => {
+                const qty = parseInt(document.getElementById(`qty-${piatto.id}`).value);
+                if (qty > 0) {
+                    piatti.push({
+                        id: piatto.id,
+                        nome: piatto.nome,
+                        prezzo: piatto.prezzo,
+                        quantita: qty
+                    });
+                }
+            });
+            
+            if (piatti.length === 0) {
+                alert('Seleziona almeno un piatto!');
+                return;
+            }
+            
+            nuovoOrdine(tavolo, piatti);
+            
+            // Reset form
+            menu.forEach(piatto => {
+                document.getElementById(`qty-${piatto.id}`).value = 0;
+            });
+        }
+
+        // Inizializzazione
+        mostraInterfaccia();
+    </script>
+</body>
+</html>
